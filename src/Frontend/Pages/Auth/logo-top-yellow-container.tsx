@@ -1,5 +1,4 @@
 import { Layout } from "@ui-kitten/components";
-import "./.stylee.css";
 import { StyleSheet } from "react-native";
 
 const TopYellowContainer: React.FC = () => {
