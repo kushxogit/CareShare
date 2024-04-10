@@ -2,6 +2,7 @@ import { Button, Layout, Text } from "@ui-kitten/components";
 import PrimaryButton from "../../Components/Buttons/button.component";
 import ButtonText from "../../Components/Buttons/button-text.component";
 import { useNavigation } from "@react-navigation/native";
+import React from "react";
 
 const LandingPageButtonContainer: React.FC = () => {
   const navigation = useNavigation<NavigationType>();

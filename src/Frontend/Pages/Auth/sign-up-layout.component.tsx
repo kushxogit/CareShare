@@ -7,6 +7,7 @@ import ButtonText from "src/Frontend/Components/Buttons/button-text.component";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import constant from "src/Frontend/Constants/validation";
+import React from "react";
 
 const SignupSchema = Yup.object().shape({
   name: Yup.string().required(constant.CANNOT_BE_EMPTY),
