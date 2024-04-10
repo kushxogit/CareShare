@@ -4,8 +4,11 @@ import { useState } from "react";
 import PasswordInput from "src/Frontend/Components/Input-Field/password-input.component";
 import PrimaryButton from "src/Frontend/Components/Buttons/button.component";
 import ButtonText from "src/Frontend/Components/Buttons/button-text.component";
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
 
 const LogInLayout: React.FC = () => {
+  const navigation = useNavigation<NavigationType>();
   const [name, setName] = useState<string>(null);
   return (
     <Layout style={{ flex: 1, width: "100%", height: "100%" }}>
@@ -20,7 +23,10 @@ const LogInLayout: React.FC = () => {
             onChangeText={(nextValue) => setName(nextValue)}
           />
           <PasswordInput />
-          <PrimaryButton fullWidth={true} >
+          <PrimaryButton
+            fullWidth={true}
+            onPress={() => navigation.navigate("DashBoard")}
+          >
             <ButtonText>Let's Donate</ButtonText>
           </PrimaryButton>
           <Text>Forgot your Password?</Text>
