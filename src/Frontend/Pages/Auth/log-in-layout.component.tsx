@@ -20,7 +20,7 @@ const LogInLayout: React.FC = () => {
             onChangeText={(nextValue) => setName(nextValue)}
           />
           <PasswordInput />
-          <PrimaryButton fullWidth={true}>
+          <PrimaryButton fullWidth={true} >
             <ButtonText>Let's Donate</ButtonText>
           </PrimaryButton>
           <Text>Forgot your Password?</Text>
