@@ -3,7 +3,7 @@ import LandingPage from "./Pages/LandingPage/landing-page";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUpPage from "./Pages/Auth/sign-up";
-import  Tabs from "./Pages/LandingPage/tab_bar"
+import Tabs from "./Components/nav_bar/tab_bar";
 import React from "react";
 
 export default function Initial() {
