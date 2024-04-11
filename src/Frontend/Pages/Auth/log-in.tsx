@@ -1,5 +1,6 @@
 import { Layout, Text } from "@ui-kitten/components";
 import LogInLayout from "./log-in-layout.component";
+import React from "react";
 
 function LogInPage() {
   return (
