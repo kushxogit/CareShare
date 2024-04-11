@@ -4,11 +4,13 @@ import Initial from "./src/Frontend/index";
 import * as eva from "@eva-design/eva";
 import { ApplicationProvider } from "@ui-kitten/components";
 import React from "react";
+import Toast from "react-native-toast-message";
 
 export default function App() {
   return (
     <ApplicationProvider {...eva} theme={eva.light}>
       <Initial />
+      <Toast />
     </ApplicationProvider>
   );
 }

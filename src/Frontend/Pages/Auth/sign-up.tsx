@@ -1,5 +1,4 @@
-import { Layout, Text } from "@ui-kitten/components";
-import LogInLayout from "./log-in-layout.component";
+import { Layout } from "@ui-kitten/components";
 import SignUpLayout from "./sign-up-layout.component";
 import React from "react";
 
