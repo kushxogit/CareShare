@@ -1,6 +1,5 @@
 import { Input, Layout, Text, Button } from "@ui-kitten/components";
 import TopYellowContainer from "./logo-top-yellow-container";
-import { useState } from "react";
 import PasswordInput from "src/Frontend/Components/Input-Field/password-input.component";
 import PrimaryButton from "src/Frontend/Components/Buttons/button.component";
 import ButtonText from "src/Frontend/Components/Buttons/button-text.component";
@@ -8,6 +7,11 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import constant from "src/Frontend/Constants/validation";
 import React from "react";
+import AuthService from "src/Frontend/Services/auth.service";
+import {
+  showToastError,
+  showToastSuccess,
+} from "src/Frontend/Components/toast";
 
 const SignupSchema = Yup.object().shape({
   name: Yup.string().required(constant.CANNOT_BE_EMPTY),
@@ -19,6 +23,8 @@ const SignupSchema = Yup.object().shape({
 });
 
 const SignUpLayout: React.FC = () => {
+  const authServiceInstance = new AuthService();
+
   const formik = useFormik({
     initialValues: {
       name: "",
@@ -26,12 +32,23 @@ const SignUpLayout: React.FC = () => {
       email: "",
       password: "",
     },
-    onSubmit: (values) => {
-      // Handle form submission here
-      console.log(values);
-    },
+    onSubmit: () => null,
     validationSchema: SignupSchema,
   });
+
+  const handleFormSubmit = (values, setSubmitting) => {
+    authServiceInstance
+      .signup(values.name, values.phoneNumber, values.email, values.password)
+      .then((response) => {
+        showToastSuccess(response.data.message);
+      })
+      .catch((response) => {
+        showToastError(response.error.message);
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
+  };
 
   return (
     <Layout style={{ flex: 1, width: "100%", height: "100%" }}>
@@ -65,13 +82,13 @@ const SignUpLayout: React.FC = () => {
             value={formik.values.email}
             onChangeText={formik.handleChange("email")}
             onBlur={formik.handleBlur("email")}
+            autoCapitalize="none"
           />
           {formik.touched.email && formik.errors.email && (
             <Text status="danger">{formik.errors.email}</Text>
           )}
           <PasswordInput
-            value={formik.values.password}
-            onChangeText={formik.handleChange("password")}
+            formikProps={formik}
             onBlur={formik.handleBlur("password")}
           />
           {formik.touched.password && formik.errors.password && (
@@ -85,7 +102,16 @@ const SignUpLayout: React.FC = () => {
           alignItems: "center",
         }}
       >
-        <PrimaryButton fullWidth={true} disabled={!formik.isValid}>
+        <PrimaryButton
+          fullWidth={true}
+          onPress={() => {
+            if (formik.isValid) {
+              handleFormSubmit(formik.values, formik.setSubmitting);
+            } else {
+              formik.submitForm();
+            }
+          }}
+        >
           <ButtonText>Let's Go!</ButtonText>
         </PrimaryButton>
       </Layout>

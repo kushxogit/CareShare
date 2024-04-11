@@ -1,5 +1,5 @@
 import { Layout } from "@ui-kitten/components";
-import { SvgUri } from "react-native-svg";
+import React from "react";
 
 const LandingPageYellowContainer: React.FC = () => {
   return (
@@ -12,15 +12,7 @@ const LandingPageYellowContainer: React.FC = () => {
         backgroundColor: "#FAAE2B",
         overflow: "hidden",
       }}
-    >
-      <SvgUri
-        height={200}
-        width={200}
-        uri={
-          "https://github.com/kushxogit/CareShare/blob/frontend-landing-page/assets/CareShareLogo.svg"
-        }
-      />
-    </Layout>
+    ></Layout>
   );
 };
 

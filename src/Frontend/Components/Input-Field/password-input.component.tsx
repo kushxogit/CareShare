@@ -1,11 +1,13 @@
 import { Icon, Input, InputProps, Text } from "@ui-kitten/components";
-import { useState } from "react";
+import React, { useState } from "react";
 import { TouchableWithoutFeedback } from "react-native";
 
-interface PasswordInputProps extends InputProps {}
+interface PasswordInputProps extends InputProps {
+  formikProps: any;
+}
 
-const PasswordInput = ({ ...otherProps }): React.ReactElement => {
-  const [value, setValue] = useState("");
+const PasswordInput = ({ formikProps, ...otherProps }): React.ReactElement => {
+  const { values, handleChange, handleBlur } = formikProps;
   const [secureTextEntry, setSecureTextEntry] = useState(true);
   const toggleSecureEntry = (): void => {
     setSecureTextEntry(!secureTextEntry);
@@ -21,11 +23,12 @@ const PasswordInput = ({ ...otherProps }): React.ReactElement => {
     <Input
       {...otherProps}
       size="large"
-      value={value}
+      value={values.password}
       placeholder="Password"
       accessoryRight={renderIcon}
       secureTextEntry={secureTextEntry}
-      onChangeText={(nextValue) => setValue(nextValue)}
+      onChangeText={handleChange("password")}
+      onBlur={handleBlur("password")}
     ></Input>
   );
 };

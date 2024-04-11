@@ -1,15 +1,44 @@
 import { Input, Layout, Text } from "@ui-kitten/components";
 import TopYellowContainer from "./logo-top-yellow-container";
-import { useState } from "react";
 import PasswordInput from "src/Frontend/Components/Input-Field/password-input.component";
 import PrimaryButton from "src/Frontend/Components/Buttons/button.component";
 import ButtonText from "src/Frontend/Components/Buttons/button-text.component";
-import { useNavigation } from "@react-navigation/native";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import constant from "src/Frontend/Constants/validation";
 import React from "react";
+import AuthService from "src/Frontend/Services/auth.service";
+import { showToastError, showToastSuccess } from "src/Frontend/Components/toast";
+
+const LoginSchema = Yup.object().shape({
+  email: Yup.string()
+    .email(constant.INVALID_EMAIL)
+    .required(constant.CANNOT_BE_EMPTY),
+  password: Yup.string().required(constant.CANNOT_BE_EMPTY),
+});
 
 const LogInLayout: React.FC = () => {
-  const navigation = useNavigation<NavigationType>();
-  const [name, setName] = useState<string>(null);
+  const authServiceInstance = new AuthService();
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: LoginSchema,
+    onSubmit: (values, { setSubmitting }) => {
+      authServiceInstance
+        .login(values.email, values.password)
+        .then((response) => {showToastSuccess(response.data.message)})
+        .catch((error) => {
+          showToastError(error.response.body.message);
+        })
+        .finally(() => {
+          setSubmitting(false);
+        });
+    },
+  });
+
   return (
     <Layout style={{ flex: 1, width: "100%", height: "100%" }}>
       <TopYellowContainer />
@@ -19,13 +48,24 @@ const LogInLayout: React.FC = () => {
           <Input
             size="large"
             placeholder="Email"
-            value={name}
-            onChangeText={(nextValue) => setName(nextValue)}
+            value={formik.values.email}
+            onChangeText={formik.handleChange("email")}
+            onBlur={formik.handleBlur("email")}
           />
-          <PasswordInput />
+          {formik.touched.email && formik.errors.email && (
+            <Text status="danger">{formik.errors.email}</Text>
+          )}
+          <PasswordInput
+            formikProps={formik}
+            onBlur={formik.handleBlur("password")}
+          />
+          {formik.touched.password && formik.errors.password && (
+            <Text status="danger">{formik.errors.password}</Text>
+          )}
           <PrimaryButton
             fullWidth={true}
-            onPress={() => navigation.navigate("DashBoard")}
+            onPress={() => formik.handleSubmit()}
+            disabled={formik.isSubmitting || !formik.isValid}
           >
             <ButtonText>Let's Donate</ButtonText>
           </PrimaryButton>
@@ -46,4 +86,5 @@ const LogInLayout: React.FC = () => {
     </Layout>
   );
 };
+
 export default LogInLayout;
