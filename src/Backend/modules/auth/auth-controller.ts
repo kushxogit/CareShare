@@ -4,7 +4,6 @@ import { serializeUserAsJSON } from "./utils/auth-serializer";
 
 export const signup = async (req: Request, res: Response) => {
   const { name, phoneNumber, email, password } = req.body;
-  console.log("🚀 ~ signup ~ req.body:", req.body);
   try {
     const user = await UserService.createUser(
       name,

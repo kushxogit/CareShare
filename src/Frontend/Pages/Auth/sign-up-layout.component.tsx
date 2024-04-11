@@ -40,7 +40,6 @@ const SignUpLayout: React.FC = () => {
     authServiceInstance
       .signup(values.name, values.phoneNumber, values.email, values.password)
       .then((response) => {
-        console.log("🚀 ~ .then ~ response:", response)
         showToastSuccess(response.data.message);
       })
       .catch((response) => {
@@ -83,6 +82,7 @@ const SignUpLayout: React.FC = () => {
             value={formik.values.email}
             onChangeText={formik.handleChange("email")}
             onBlur={formik.handleBlur("email")}
+            autoCapitalize="none"
           />
           {formik.touched.email && formik.errors.email && (
             <Text status="danger">{formik.errors.email}</Text>

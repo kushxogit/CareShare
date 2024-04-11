@@ -8,7 +8,6 @@ export function showToastSuccess(message: string) {
 }
 
 export function showToastError(message: string) {
-  console.log("asdsad", message);
   Toast.show({
     type: "error",
     text1: message,
