@@ -202,7 +202,7 @@ const Tabs = () => {
         right: 0,
         elevation: 0,
         backgroundColor: "#fffffff",
-        height: 120, // Adjust the height as needed
+        height: 805, // Adjust the height as needed
         ...styles.shadow,
       }}
     >
