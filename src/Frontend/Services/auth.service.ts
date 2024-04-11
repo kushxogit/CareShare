@@ -1,43 +1,34 @@
 import APIService from "./api.service";
 
 export default class AuthService extends APIService {
-  private apiClient: any; 
-
-  constructor(apiClient: any) {
-    super();
-    this.apiClient = apiClient;
-  }
-
   signup = async (
     name: string,
     phoneNumber: string,
     email: string,
     password: string
-  ) => {
+  ): Promise<APIResponse<any>> => {
     try {
-      const response = await this.apiClient.post("/api/auth/signup", {
+      const response = await this.apiClient.post("/auth/signup", {
         name,
         phoneNumber,
         email,
         password,
       });
-      return response.data;
+      return { data: response.data, error: undefined };
     } catch (error) {
-      console.error("Error in signup:", error);
-      throw error;
+      return { data: undefined, error };
     }
   };
 
-  login = async (email: string, password: string) => {
+  login = async (email: string, password: string): Promise<APIResponse<any>> => {
     try {
       const response = await this.apiClient.post("/api/auth/login", {
         email,
         password,
       });
-      return response.data;
+      return { data: response.data, error: undefined };
     } catch (error) {
-      console.error("Error in login:", error);
-      throw error;
+      return { data: undefined, error };
     }
   };
 }

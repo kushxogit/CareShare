@@ -40,11 +40,11 @@ const SignUpLayout: React.FC = () => {
     authServiceInstance
       .signup(values.name, values.phoneNumber, values.email, values.password)
       .then((response) => {
-        showToastSuccess(response.body.message);
+        console.log("🚀 ~ .then ~ response:", response)
+        showToastSuccess(response.data.message);
       })
-      .catch((error) => {
-        console.log("error", error.message);
-        showToastError(error.message);
+      .catch((response) => {
+        showToastError(response.error.message);
       })
       .finally(() => {
         setSubmitting(false);
