@@ -159,10 +159,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Layout, Text } from "@ui-kitten/components";
 import AddNav from 'src/Frontend/Pages/LandingPage/add';
 import { StyleSheet, Image, View ,TouchableOpacity} from "react-native";
-import MessageNav from 'src/Frontend/Pages/LandingPage/message';
+
 import FeedNav from 'src/Frontend/Pages/LandingPage/feed';
 import ProfileNav from 'src/Frontend/Pages/LandingPage/profile';
-import SettingNav from 'src/Frontend/Pages/LandingPage/setting';
+
 import { Feather } from '@expo/vector-icons';
 import { FontAwesome6 } from '@expo/vector-icons';
 
@@ -234,25 +234,7 @@ const Tabs = () => {
           }}
         />
       
-        <Tab.Screen
-          name="Message"
-          component={MessageNav}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <View style={{alignItems:'center',justifyContent:'center',top:10}}>
-                <AntDesign name="message1" size={24} color="black"  resizeMode="contain"
-                  style={{
-                    width: 25,
-                    height: 25,
-                    tintColor: focused ? "#e32f45" : "#748c94",
-                  }}/>
-                <Text style={{ color: focused ? "#e32f45" : "#748c94",fontSize:12 }}>
-                  Message
-                </Text>
-              </View>
-            ),
-          }}
-        />
+        
           <Tab.Screen
           name="Add"
           component={AddNav}
@@ -282,25 +264,7 @@ const Tabs = () => {
             ),
           }}
         />
-        <Tab.Screen
-          name="Setting"
-          component={SettingNav}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <View style={{alignItems:'center',justifyContent:'center',top:10}}>
-                <Feather name="settings" size={24} color="black"  resizeMode="contain"
-                  style={{
-                    width: 25,
-                    height: 25,
-                    tintColor: focused ? "#e32f45" : "#748c94",
-                  }}/>
-                <Text style={{ color: focused ? "#e32f45" : "#748c94",fontSize:12 }}>
-                  Setting
-                </Text>
-              </View>
-            ),
-          }}
-        />
+        
       </Tab.Navigator>
     </Layout>
   );

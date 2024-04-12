@@ -23,7 +23,7 @@ const LandingPageButtonContainer: React.FC = () => {
         borderTopRightRadius: 100,
       }}
     >
-      <PrimaryButton onPress={() => navigation.navigate("DashBoard")}>
+      <PrimaryButton onPress={() => navigation.navigate("SignUp")}>
         <ButtonText>SignUp</ButtonText>
       </PrimaryButton>
       <Layout
