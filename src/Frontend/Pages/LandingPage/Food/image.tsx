@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet, Alert } from
 import { FontAwesome5 } from '@expo/vector-icons';
 import * as ImagePicker from 'react-native-image-picker';
 
-const FoodScreen = () => {
+const ImagePart = () => {
   const [selectedImages, setSelectedImages] = useState([]);
 
   // Function to handle image upload
@@ -50,10 +50,11 @@ const FoodScreen = () => {
 
 const styles = StyleSheet.create({
   imagePicker: {
+    left:20,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    width: '100%',
+    width: '50%',
     height: 100, // Adjust the height as needed
     borderWidth: 1,
     borderStyle: 'dashed',
@@ -70,4 +71,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FoodScreen;
+export default ImagePart;
