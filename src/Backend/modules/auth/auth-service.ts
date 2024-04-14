@@ -8,3 +8,4 @@ export const createUser = async (name, phoneNumber, email, password) => {
 export const findUserByEmail = async (email) => {
   return User.findOne({ email });
 };
+
