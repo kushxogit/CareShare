@@ -7,6 +7,7 @@ import Tabs from "./Components/nav_bar/tab_bar";
 import Food from "./Pages/LandingPage/Food/food";
 import NonFood from "./Pages/LandingPage/nonFood";
 import React from "react";
+import YourComponent from "./Pages/LandingPage/Welcome_page";
 
 export default function Initial() {
   const Stack = createNativeStackNavigator();
@@ -19,6 +20,8 @@ export default function Initial() {
         <Stack.Screen name="DashBoard" component={Tabs} />
         <Stack.Screen name="Free-Food" component={Food} />
         <Stack.Screen name="Free Non-Food" component={NonFood} />
+        <Stack.Screen name="Welcome" component={YourComponent} />
+
         
 
       </Stack.Navigator>

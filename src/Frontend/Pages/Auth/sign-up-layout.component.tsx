@@ -109,7 +109,7 @@ const SignUpLayout: React.FC = () => {
           onPress={() => {
             if (formik.isValid) {
               handleFormSubmit(formik.values, formik.setSubmitting);
-              navigation.navigate("DashBoard");
+              navigation.navigate("Welcome");
             } else {
               formik.submitForm();
             }
