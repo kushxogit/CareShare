@@ -5,8 +5,8 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUpPage from "./Pages/Auth/sign-up";
 import Tabs from "./Components/nav_bar/tab_bar";
 import NonFood from "./Pages/LandingPage/nonFood";
-import FoodScreen from "./Pages/Food/food";
 import React from "react";
+import FoodScreen from "./Pages/LandingPage/Food/food";
 
 export default function Initial() {
   const Stack = createNativeStackNavigator();
