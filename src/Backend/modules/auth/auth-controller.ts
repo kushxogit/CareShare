@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as UserService from "./auth-service";
 import { serializeUserAsJSON } from "./utils/auth-serializer";
+import jwt from "jsonwebtoken";
 
 export const signup = async (req: Request, res: Response) => {
   const { name, phoneNumber, email, password } = req.body;
@@ -20,18 +21,29 @@ export const signup = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
+    console.log("ssss");
     const { email, password } = req.body;
     const user = await UserService.findUserByEmail(email);
     if (!user) {
-      return res.status(401).json({ message: "Authentication failed" });
+      return res.status(401).json({ message: "User not found" });
     }
     if (password !== user.password) {
-      return res.status(401).json({ message: "Authentication failed" });
+      return res
+        .status(401)
+        .json({ message: "Incorrect Password, try again." });
     }
     const serializedUser = serializeUserAsJSON(user);
-    res
-      .status(200)
-      .send({ message: "Logged in successfully", user: serializedUser });
+
+    const secretKey = process.env.JWT_SECRET;
+    const token = jwt.sign({ userId: user.id }, secretKey, {
+      expiresIn: "24h",
+    });
+
+    res.status(200).send({
+      message: "Logged in successfully",
+      user: serializedUser,
+      token: token,
+    });
   } catch (error) {
     res.status(500).send({ message: "Login failed" });
   }
