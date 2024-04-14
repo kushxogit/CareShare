@@ -1,3 +1,4 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import APIService from "./api.service";
 
 export default class AuthService extends APIService {
@@ -16,19 +17,23 @@ export default class AuthService extends APIService {
       });
       return { data: response.data, error: undefined };
     } catch (error) {
-      return { data: undefined, error };
+      return Promise.reject(error.message);
     }
   };
 
-  login = async (email: string, password: string): Promise<APIResponse<any>> => {
+  login = async (
+    email: string,
+    password: string
+  ): Promise<APIResponse<any>> => {
     try {
-      const response = await this.apiClient.post("/api/auth/login", {
+      const response = await this.apiClient.post("/auth/login", {
         email,
         password,
       });
+      await AsyncStorage.setItem("token", response.data.token);
       return { data: response.data, error: undefined };
     } catch (error) {
-      return { data: undefined, error };
+      return Promise.reject(error);
     }
   };
 }

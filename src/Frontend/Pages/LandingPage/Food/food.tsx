@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Layout } from "@ui-kitten/components";
 import ImagePart from "./image";

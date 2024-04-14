@@ -24,7 +24,7 @@ const SignupSchema = Yup.object().shape({
 });
 
 const SignUpLayout: React.FC = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationType>();
   const authServiceInstance = new AuthService();
 
   const formik = useFormik({

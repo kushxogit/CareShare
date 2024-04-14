@@ -8,7 +8,11 @@ import * as Yup from "yup";
 import constant from "src/Frontend/Constants/validation";
 import React from "react";
 import AuthService from "src/Frontend/Services/auth.service";
-import { showToastError, showToastSuccess } from "src/Frontend/Components/toast";
+import {
+  showToastError,
+  showToastSuccess,
+} from "src/Frontend/Components/toast";
+import { useNavigation } from "@react-navigation/native";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
@@ -18,6 +22,7 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LogInLayout: React.FC = () => {
+  const navigation = useNavigation<NavigationType>();
   const authServiceInstance = new AuthService();
 
   const formik = useFormik({
@@ -29,9 +34,12 @@ const LogInLayout: React.FC = () => {
     onSubmit: (values, { setSubmitting }) => {
       authServiceInstance
         .login(values.email, values.password)
-        .then((response) => {showToastSuccess(response.data.message)})
-        .catch((error) => {
-          showToastError(error.response.body.message);
+        .then((response) => {
+          showToastSuccess(response.data.message);
+          navigation.navigate("DashBoard");
+        })
+        .catch((response) => {
+          showToastError(response.error.message);
         })
         .finally(() => {
           setSubmitting(false);
