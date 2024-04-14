@@ -1,9 +1,7 @@
 import Donation, { IDonation } from "./models/donation-db";
 
 export const createDonation = async (donationData: IDonation) => {
-  console.log(donationData, "sadjkasdkjasd");
   const donation = new Donation(donationData);
-  console.log("🚀 ~ createDonation ~ donation:", donation);
   return donation.save();
 };
 
