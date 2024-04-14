@@ -7,9 +7,17 @@
 
 // export default FeedNav;
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, Image, FlatList, StyleSheet, Alert } from "react-native";
-import { FontAwesome5 } from '@expo/vector-icons';
-import * as ImagePicker from 'react-native-image-picker';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  FlatList,
+  StyleSheet,
+  Alert,
+} from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
+import * as ImagePicker from "react-native-image-picker";
 
 const FoodScreen = () => {
   const [selectedImages, setSelectedImages] = useState([]);
@@ -17,21 +25,9 @@ const FoodScreen = () => {
   // Function to handle image upload
   const handleUpload = () => {
     const options = {
-      mediaType: 'photo',
+      mediaType: "photo",
       quality: 1,
     };
-
-    ImagePicker.launchImageLibrary(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
-        Alert.alert('Error', 'An error occurred while selecting image. Please try again.');
-      } else {
-        const source = { uri: response.uri };
-        setSelectedImages([...selectedImages, source]);
-      }
-    });
   };
 
   return (
@@ -58,14 +54,14 @@ const FoodScreen = () => {
 
 const styles = StyleSheet.create({
   imagePicker: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
-    height: 100, // Adjust the height as needed
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
+    height: 100,
     borderWidth: 1,
-    borderStyle: 'dashed',
-    borderColor: 'gray',
+    borderStyle: "dashed",
+    borderColor: "gray",
     borderRadius: 5,
     marginVertical: 10,
     paddingHorizontal: 10,

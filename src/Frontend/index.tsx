@@ -4,8 +4,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import SignUpPage from "./Pages/Auth/sign-up";
 import Tabs from "./Components/nav_bar/tab_bar";
-import Food from "./Pages/LandingPage/Food/food";
 import NonFood from "./Pages/LandingPage/nonFood";
+import FoodScreen from "./Pages/Food/food";
 import React from "react";
 
 export default function Initial() {
@@ -17,10 +17,8 @@ export default function Initial() {
         <Stack.Screen name="LogIn" component={LogInPage} />
         <Stack.Screen name="SignUp" component={SignUpPage} />
         <Stack.Screen name="DashBoard" component={Tabs} />
-        <Stack.Screen name="Free-Food" component={Food} />
+        <Stack.Screen name="Free-Food" component={FoodScreen} />
         <Stack.Screen name="Free Non-Food" component={NonFood} />
-        
-
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -21,13 +21,13 @@ export const signup = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   try {
-    console.log("ssss");
     const { email, password } = req.body;
     const user = await UserService.findUserByEmail(email);
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res.status(401).send({ message: "User not found" });
     }
     if (password !== user.password) {
+      console.log("Incorrect password");
       return res
         .status(401)
         .json({ message: "Incorrect Password, try again." });
@@ -35,6 +35,9 @@ export const login = async (req: Request, res: Response) => {
     const serializedUser = serializeUserAsJSON(user);
 
     const secretKey = process.env.JWT_SECRET;
+    if (!secretKey) {
+      return res.status(500).send({ message: "JWT_SECRET not set" });
+    }
     const token = jwt.sign({ userId: user.id }, secretKey, {
       expiresIn: "24h",
     });
@@ -45,6 +48,7 @@ export const login = async (req: Request, res: Response) => {
       token: token,
     });
   } catch (error) {
+    console.log("Error:", error);
     res.status(500).send({ message: "Login failed" });
   }
 };
