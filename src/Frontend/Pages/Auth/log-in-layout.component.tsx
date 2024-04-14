@@ -56,8 +56,7 @@ const LogInLayout: React.FC = () => {
             <Text status="danger">{formik.errors.email}</Text>
           )}
           <PasswordInput
-            value={formik.values.password}
-            onChangeText={formik.handleChange("password")}
+            formikProps={formik}
             onBlur={formik.handleBlur("password")}
           />
           {formik.touched.password && formik.errors.password && (

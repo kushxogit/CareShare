@@ -7,6 +7,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import constant from "src/Frontend/Constants/validation";
 import React from "react";
+import { useNavigation } from '@react-navigation/native';
 import AuthService from "src/Frontend/Services/auth.service";
 import {
   showToastError,
@@ -23,6 +24,7 @@ const SignupSchema = Yup.object().shape({
 });
 
 const SignUpLayout: React.FC = () => {
+  const navigation = useNavigation();
   const authServiceInstance = new AuthService();
 
   const formik = useFormik({
@@ -107,9 +109,11 @@ const SignUpLayout: React.FC = () => {
           onPress={() => {
             if (formik.isValid) {
               handleFormSubmit(formik.values, formik.setSubmitting);
+              navigation.navigate("DashBoard");
             } else {
               formik.submitForm();
             }
+           
           }}
         >
           <ButtonText>Let's Go!</ButtonText>
