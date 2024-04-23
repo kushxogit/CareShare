@@ -1,5 +1,5 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction } from "express";
+import jwt from "jsonwebtoken";
 
 declare global {
   namespace Express {
@@ -10,9 +10,8 @@ declare global {
 }
 
 const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
-    console.log('object')
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (token == null) {
     return res.sendStatus(401);

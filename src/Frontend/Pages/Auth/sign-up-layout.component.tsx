@@ -1,4 +1,11 @@
-import { Input, Layout, Text, Button } from "@ui-kitten/components";
+import {
+  Input,
+  Layout,
+  Text,
+  Button,
+  Select,
+  SelectItem,
+} from "@ui-kitten/components";
 import TopYellowContainer from "./logo-top-yellow-container";
 import PasswordInput from "src/Frontend/Components/Input-Field/password-input.component";
 import PrimaryButton from "src/Frontend/Components/Buttons/button.component";
@@ -7,12 +14,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import constant from "src/Frontend/Constants/validation";
 import React from "react";
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation } from "@react-navigation/native";
 import AuthService from "src/Frontend/Services/auth.service";
 import {
   showToastError,
   showToastSuccess,
 } from "src/Frontend/Components/toast";
+import { useAuth } from "src/Frontend/Contexts/authContext";
 
 const SignupSchema = Yup.object().shape({
   name: Yup.string().required(constant.CANNOT_BE_EMPTY),
@@ -24,15 +32,16 @@ const SignupSchema = Yup.object().shape({
 });
 
 const SignUpLayout: React.FC = () => {
-  const navigation = useNavigation<NavigationType>();
+  const { setIsUserLoggedIn } = useAuth();
   const authServiceInstance = new AuthService();
-
+  const navigation = useNavigation<NavigationType>();
   const formik = useFormik({
     initialValues: {
       name: "",
       phoneNumber: "",
       email: "",
       password: "",
+      role: "",
     },
     onSubmit: () => null,
     validationSchema: SignupSchema,
@@ -40,9 +49,17 @@ const SignUpLayout: React.FC = () => {
 
   const handleFormSubmit = (values, setSubmitting) => {
     authServiceInstance
-      .signup(values.name, values.phoneNumber, values.email, values.password)
+      .signup(
+        values.name,
+        values.phoneNumber,
+        values.email,
+        values.password,
+        values.role
+      )
       .then((response) => {
+        navigation.navigate("LogIn");
         showToastSuccess(response.data.message);
+        formik.resetForm();
       })
       .catch((response) => {
         showToastError(response.error.message);
@@ -96,6 +113,24 @@ const SignUpLayout: React.FC = () => {
           {formik.touched.password && formik.errors.password && (
             <Text status="danger">{formik.errors.password}</Text>
           )}
+
+          <Layout style={{ width: "100%" }}>
+            <Select
+              label="I am a"
+              value={formik.values.role}
+              onSelect={(index) => {
+                const selectedIndex = Array.isArray(index) ? index[0] : index;
+                formik.setFieldValue(
+                  "role",
+                  selectedIndex.row === 0 ? "Donor" : "Volunteer"
+                );
+              }}
+              onBlur={() => formik.setFieldTouched("role", true)}
+            >
+              <SelectItem title={"Donor"} />
+              <SelectItem title={"Volunteer"} />
+            </Select>
+          </Layout>
         </Layout>
       </Layout>
       <Layout
@@ -107,14 +142,19 @@ const SignUpLayout: React.FC = () => {
         <PrimaryButton
           fullWidth={true}
           onPress={() => {
-            if (formik.isValid) {
+            if (
+              formik.isValid &&
+              Object.values(formik.values).every((value) => value.trim() !== "")
+            ) {
               handleFormSubmit(formik.values, formik.setSubmitting);
-              navigation.navigate("DashBoard");
             } else {
               formik.submitForm();
             }
-           
           }}
+          disabled={
+            !formik.isValid ||
+            Object.values(formik.values).some((value) => value.trim() === "")
+          }
         >
           <ButtonText>Let's Go!</ButtonText>
         </PrimaryButton>

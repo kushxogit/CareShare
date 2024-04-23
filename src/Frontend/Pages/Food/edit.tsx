@@ -47,7 +47,6 @@ import {
         quality: 1,
       });
   
-      console.log(result);
   
       if (!result.canceled) {
         setSelectedImage(result.assets[0].uri);

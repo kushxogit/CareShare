@@ -1,118 +1,56 @@
-
-import { AntDesign } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons';
 import React from "react";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Layout, Text } from "@ui-kitten/components";
-import AddNav from 'src/Frontend/Pages/LandingPage/add';
-import { StyleSheet, Image, View ,TouchableOpacity} from "react-native";
+import { AntDesign, Ionicons, FontAwesome6 } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
 
-import FeedNav from 'src/Frontend/Pages/LandingPage/feed';
-import ProfileNav from 'src/Frontend/Pages/LandingPage/profile';
+const CustomNavBar = () => {
+  const navigation = useNavigation<NavigationType>();
 
-import { Feather } from '@expo/vector-icons';
-import { FontAwesome6 } from '@expo/vector-icons';
-
-const Tab = createBottomTabNavigator();
-
-const CustomTabBarButton = ({ children, onPress }) => {
-  return (
-    <TouchableOpacity
-      style={{
-        top: -30,
-        justifyContent: "center",
-        ...styles.shadow,
-      }}
-      onPress={onPress}
-    >
-      <View
-        style={{
-          width: 70,
-          height: 70,
-          borderRadius: 35,
-          backgroundColor: "#FAAE2B",
-        }}
-      >
-        {children}
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-const Tabs = () => {
   return (
     <Layout
       style={{
+        flexDirection: "row",
         position: "absolute",
         bottom: 0,
         left: 0,
         right: 0,
         elevation: 0,
-        backgroundColor: "#fffffff",
-        height: 805, // Adjust the height as needed
+        backgroundColor: "#f0f0f0",
+        height: 70,
+        justifyContent: "space-around",
+        alignItems: "center",
         ...styles.shadow,
       }}
     >
-      <Tab.Navigator
-        tabBarOptions={{
-          showLabel: false,
-          style: {
-            backgroundColor: "transparent", // Set tab bar background to transparent
-          },
-        }}
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Feed")}
+        style={styles.navButton}
       >
-        <Tab.Screen
-          name="Feed"
-          component={FeedNav}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <View style={{alignItems:'center',justifyContent:'center',top:10}}>
-                <FontAwesome6 name="list-ol" size={24} color="black" resizeMode="contain"
-                  style={{
-                    width: 25,
-                    height: 25,
-                    tintColor: focused ? "#e32f45" : "#748c94",
-                  }}/>
-                <Text style={{ color: focused ? "#e32f45" : "#748c94",fontSize:12 }}>
-                  Feed
-                </Text>
-              </View>
-            ),
-          }}
+        <FontAwesome6 name="list-ol" size={24} color="#748c94" />
+        <Text style={styles.navButtonText}>Feed</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        onPress={() => navigation.navigate("Add")}
+        style={{ ...styles.navButton, ...styles.addButton }}
+      >
+        <AntDesign name="pluscircle" size={44} color="#FAAE2B" />
+        <AntDesign
+          name="plus"
+          size={24}
+          color="white"
+          style={styles.addIcon}
         />
-      
-        
-          <Tab.Screen
-          name="Add"
-          component={AddNav}
-          options={{
-            tabBarIcon:({focused})=>(
-<AntDesign name="pluscircle" size={44} color="black" />
-            ),
-            tabBarButton: (props) => <CustomTabBarButton {...props} />,
-          }}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={ProfileNav}
-          options={{
-            tabBarIcon: ({ focused }) => (
-              <View style={{alignItems:'center',justifyContent:'center',top:10}}>
-                <Ionicons name="person-circle-outline" size={24} color="black"  resizeMode="contain"
-                  style={{
-                    width: 25,
-                    height: 25,
-                    tintColor: focused ? "#e32f45" : "#748c94",
-                  }}/>
-                <Text style={{ color: focused ? "#e32f45" : "#748c94" ,fontSize:12}}>
-                  Profile
-                </Text>
-              </View>
-            ),
-          }}
-        />
-        
-      </Tab.Navigator>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        // onPress={() => navigation.navigate("Profile")}
+        style={styles.navButton}
+      >
+        <Ionicons name="person-circle-outline" size={24} color="#748c94" />
+        <Text style={styles.navButtonText}>Profile</Text>
+      </TouchableOpacity>
     </Layout>
   );
 };
@@ -128,6 +66,34 @@ const styles = StyleSheet.create({
     shadowRadius: 3.5,
     elevation: 5,
   },
+  navButton: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  addButton: {
+    top: -30,
+    width: 70,
+    height: 70,
+    borderRadius: 35,
+    backgroundColor: "#FAAE2B",
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  addIcon: {
+    position: "absolute",
+  },
+  navButtonText: {
+    color: "#748c94",
+    fontSize: 12,
+  },
 });
 
-export default Tabs;
+export default CustomNavBar;

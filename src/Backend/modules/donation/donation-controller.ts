@@ -20,7 +20,19 @@ export const createDonation = async (req: Request, res: Response) => {
 
 export const getAllDonations = async (req: Request, res: Response) => {
   try {
-    const donations = await DonationService.getAllDonations(req.params.id);
+    const donations = await DonationService.getAllDonations();
+    res.status(200).send({ donations: serializeDonations(donations) });
+  } catch (error) {
+    res.status(500).send({ message: "Failed to get donations" });
+  }
+};
+
+export const getAllDonationsForUser = async (req: Request, res: Response) => {
+  console.log("here i am2");
+  try {
+    const donations = await DonationService.getAllDonationsForUser(
+      req.params.id
+    );
     res.status(200).send({ donations: serializeDonations(donations) });
   } catch (error) {
     res.status(500).send({ message: "Failed to get donations" });

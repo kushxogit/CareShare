@@ -3,10 +3,9 @@ export interface ILocation {
   city: string;
   state: string;
   zipCode: string;
-  country: string;
 }
 
-export enum donationType {
+export enum DonationType {
   FOOD = "food",
   NONFOOD = "non food",
 }
@@ -17,5 +16,5 @@ export interface IDonation {
   pickupTimes: string;
   location: ILocation;
   for: string;
-  type: donationType;
+  type: DonationType;
 }

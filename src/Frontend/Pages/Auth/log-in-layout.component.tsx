@@ -13,6 +13,7 @@ import {
   showToastSuccess,
 } from "src/Frontend/Components/toast";
 import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "src/Frontend/Contexts/authContext";
 
 const LoginSchema = Yup.object().shape({
   email: Yup.string()
@@ -22,8 +23,11 @@ const LoginSchema = Yup.object().shape({
 });
 
 const LogInLayout: React.FC = () => {
-  const navigation = useNavigation<NavigationType>();
   const authServiceInstance = new AuthService();
+  const navigation = useNavigation<NavigationType>();
+
+
+  const { setIsUserLoggedIn, setUser} = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -33,10 +37,10 @@ const LogInLayout: React.FC = () => {
     validationSchema: LoginSchema,
     onSubmit: (values, { setSubmitting }) => {
       authServiceInstance
-        .login(values.email, values.password)
+        .login(values.email, values.password, setUser)
         .then((response) => {
           showToastSuccess(response.data.message);
-          navigation.navigate("DashBoard");
+          setIsUserLoggedIn(true);
         })
         .catch((response) => {
           showToastError(response.error.message);
@@ -87,7 +91,7 @@ const LogInLayout: React.FC = () => {
         }}
       >
         <Text>OR</Text>
-        <PrimaryButton fullWidth={true}>
+        <PrimaryButton fullWidth={true} onPress={() => navigation.navigate("SignUp")}>
           <ButtonText>Sign Up</ButtonText>
         </PrimaryButton>
       </Layout>

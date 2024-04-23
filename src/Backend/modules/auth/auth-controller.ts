@@ -4,14 +4,16 @@ import { serializeUserAsJSON } from "./utils/auth-serializer";
 import jwt from "jsonwebtoken";
 
 export const signup = async (req: Request, res: Response) => {
-  const { name, phoneNumber, email, password } = req.body;
+  const { name, phoneNumber, email, role, password } = req.body;
   try {
     const user = await UserService.createUser(
       name,
       phoneNumber,
       email,
+      role,
       password
     );
+    console.log("🚀 ~ signup ~ user:", user);
     const serializedUser = serializeUserAsJSON(user);
     res.status(201).send({ message: "User created", user: serializedUser });
   } catch (error) {
