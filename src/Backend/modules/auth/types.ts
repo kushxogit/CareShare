@@ -3,4 +3,6 @@ export interface User {
   email: string;
   name?: string;
   role?: string;
+  phone?: string;
+  ignoredDonations?: string[]; // Array of donation IDs to ignore
 }

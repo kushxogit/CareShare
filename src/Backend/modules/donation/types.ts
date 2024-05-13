@@ -11,10 +11,12 @@ export enum DonationType {
 }
 
 export interface IDonation {
+  active: boolean;
   title: string;
   description: string;
   pickupTimes: string;
   location: ILocation;
   for: string;
+  image?:string;
   type: DonationType;
 }

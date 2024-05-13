@@ -1,91 +1,138 @@
 import React, { useState, useEffect } from "react";
-import { Button, Layout, List, ListItem } from "@ui-kitten/components";
+import { Button, Layout, List, ListItem, Text } from "@ui-kitten/components";
 import { StyleSheet } from "react-native";
-import { IDonationData, IListItem } from "src/Frontend/types/donation-types";
+import {
+  IDonationDataWithUser,
+} from "src/Frontend/types/donation-types";
 import DonationService from "src/Frontend/Services/donation.service";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AuthService from "src/Frontend/Services/auth.service";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
+import { useAuth } from "src/Frontend/Contexts/authContext";
+import { User } from "src/Frontend/types/user-types";
 
 const donationService = new DonationService();
+const authService = new AuthService();
 
 interface IListProps {
-  items: IDonationData[];
+  items: IDonationDataWithUser[];
 }
 
 export const ListAccessoriesShowcase: React.FC<IListProps> = ({
   items,
 }): React.ReactElement => {
+  const { user, fetchUser } = useAuth();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    const fetchUserRole = async () => {
-      const role = await AsyncStorage.getItem('role');
+    const fetchCurrentUser = async () => {
+      if (user?.userId) {
+        const fetchedUser = await fetchUser(user.userId);
+        setCurrentUser(fetchedUser);
+      }
+      const role = await AsyncStorage.getItem("role");
       setUserRole(role);
     };
 
-    fetchUserRole();
-  }, []);
+    fetchCurrentUser();
+  }, [user?.userId, fetchUser]);
 
-  // Function for handling item acceptance/rejection
-  const handleItemAction = async (id: string) => {
+  const handleItemAction = async (id: string, action: "accept" | "reject") => {
     try {
-      await donationService.softDeleteDonation(id);
-      console.log(`Donation with ID ${id} has been successfully updated.`);
-      // Optionally, refresh the list or show feedback to the user
+      if (action === "accept") {
+        await donationService.softDeleteDonation(id);
+      } else if (action === "reject") {
+        await authService.ignoreDonation(id);
+      }
+      console.log(`Donation with ID ${id} has been successfully ${action}ed.`);
     } catch (error) {
-      console.error("Failed to update the donation:", error);
-      // Handle error (e.g., show error message to the user)
+      console.error(`Failed to ${action} the donation:`, error);
     }
   };
 
-  const renderItemAccessory = (id: string): React.ReactElement => (
-    userRole !== 'Donor' ? (
+  const renderItemAccessory = (id: string): React.ReactElement =>
+    userRole !== "Donor" ? (
       <Layout style={styles.buttonContainer}>
         <Button
           size="tiny"
           style={styles.acceptButton}
-          onPress={() => handleItemAction(id)} // Use handleItemAction for accept
+          onPress={() => handleItemAction(id, "accept")}
         >
           ACCEPT
         </Button>
         <Button
           size="tiny"
           style={styles.rejectButton}
-          onPress={() => handleItemAction(id)} // Use handleItemAction for reject
+          onPress={() => handleItemAction(id, "reject")}
         >
           REJECT
         </Button>
       </Layout>
-    ) : <></> // Render nothing if user role is Donor
-  );
+    ) : (
+      <></>
+    );
 
   const renderItem = ({
     item,
-    index,
   }: {
-    item: IListItem;
+    item: IDonationDataWithUser;
     index: number;
-  }): React.ReactElement => (
-    <ListItem
-      title={`${item.title}`}
-      description={`${item.description}`}
-      accessoryRight={() => renderItemAccessory(item.id)}
-      style={styles.listItem}
-    />
-  );
+  }): React.ReactElement => {
+    const isIgnored = currentUser?.user?.ignoredDonations?.includes(item.id);
+    const currentTime = Date.now();
+    const createdAtTime = new Date(item.createdAt).getTime();
+    const expiryDuration = item.expiry * 1000 * 60 * 60 * 24;
+    const isExpired = currentTime - createdAtTime > expiryDuration;
+
+    if (!isIgnored && !isExpired) {
+      return (
+        <ListItem
+          title={`${item.title}`}
+          description={`${item.description}\nBy:${item?.user?.user?.name}`}
+          accessoryRight={() => (
+            <Layout style={styles.accessoryContainer}>
+              {renderItemAccessory(item.id)}
+            </Layout>
+          )}
+          style={styles.listItem}
+          onPress={() =>
+            navigation.navigate("DonationDetail", { donation: item })
+          }
+        />
+      );
+    } else {
+      return <></>;
+    }
+  };
+
+  const activeItems = items.filter((item) => item.active !== false);
 
   return (
-    <List
-      style={styles.container}
-      data={items}
-      renderItem={renderItem}
-      ItemSeparatorComponent={() => <Layout style={styles.separator} />}
-    />
+    <>
+      <Text style={[styles.headerText, { textAlign: "left", width: "100%" }]}>
+        {userRole !== "Volunteer" ? "Users are donating..." : "Donations"}
+      </Text>
+      <List
+        style={styles.container}
+        data={activeItems}
+        renderItem={renderItem}
+        ItemSeparatorComponent={() => <Layout style={styles.separator} />}
+      />
+    </>
   );
 };
 const styles = StyleSheet.create({
   container: {
     height: "auto",
     width: "100%",
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    padding: 10,
+    color: "#000",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -111,5 +158,14 @@ const styles = StyleSheet.create({
   separator: {
     height: 0,
     backgroundColor: "transparent",
+  },
+  accessoryContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  userNameStyle: {
+    marginRight: 10,
+    color: "gray",
   },
 });

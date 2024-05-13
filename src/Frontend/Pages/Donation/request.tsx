@@ -40,6 +40,7 @@ const RequestForm = () => {
       city: "",
       postalCode: "",
       state: "",
+      expiry: "", // Add this line for the new field
     },
     validationSchema,
     onSubmit: (values) => {
@@ -54,6 +55,7 @@ const RequestForm = () => {
           zipCode: values.postalCode,
         },
         for: "Charity",
+        expiry: values.expiry ? parseInt(values.expiry) : undefined,
       };
 
       donationService
@@ -126,6 +128,14 @@ const RequestForm = () => {
           placeholder="State"
           value={formik.values.state}
           onChangeText={formik.handleChange("state")}
+          style={{ marginBottom: 10 }}
+        />
+        <Input
+          placeholder="Expiry in Days"
+          value={formik.values.expiry}
+          onChangeText={(text) =>
+            formik.setFieldValue("expiry", text.replace(/[^0-9]/g, ""))
+          }
           style={{ marginBottom: 10 }}
         />
         <PrimaryButton onPress={() => formik.handleSubmit()}>

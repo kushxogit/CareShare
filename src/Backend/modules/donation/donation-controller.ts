@@ -7,29 +7,37 @@ import {
 
 export const createDonation = async (req: Request, res: Response) => {
   try {
+    console.log("🚀 ~ createDonation ~ req.body:", req.user?.userId);
     const donationData = {
       ...req.body,
-      userId: req.user.userId,
+      userId: req.user?.userId,
     };
     const donation = await DonationService.createDonation(donationData);
     res.status(201).send({ donation: serializeDonation(donation) });
   } catch (error) {
+    console.log("🚀 ~ createDonation ~ error:", error);
     res.status(500).send({ message: "Failed to create donation" });
   }
 };
 
 export const getAllDonations = async (req: Request, res: Response) => {
   try {
+    console.log("user", req.user);
     const donations = await DonationService.getAllDonations();
-    res.status(200).send({ donations: serializeDonations(donations) });
+    const seerializedDonations = serializeDonations(donations);
+    console.log(
+      "🚀 ~ getAllDonations ~ seerializedDonations:",
+      seerializedDonations
+    );
+    res.status(200).send({ donations: seerializedDonations });
   } catch (error) {
     res.status(500).send({ message: "Failed to get donations" });
   }
 };
 
 export const getAllDonationsForUser = async (req: Request, res: Response) => {
-  console.log("here i am2");
   try {
+    console.log(req.user.userId);
     const donations = await DonationService.getAllDonationsForUser(
       req.params.id
     );
@@ -53,9 +61,10 @@ export const getDonationById = async (req: Request, res: Response) => {
 
 export const softDeleteDonation = async (req: Request, res: Response) => {
   try {
-    await DonationService.softDeleteDonation(req.params.id);
-    res.status(200).send({ message: "Donation successfully deleted" });
+    console.log(req.user.userId);
+    await DonationService.softDeleteDonation(req.params.id, req.user.userId);
+    res.status(200).send({ message: "Donation successfully accepted" });
   } catch (error) {
-    res.status(500).send({ message: "Failed to delete donation" });
+    res.status(500).send({ message: "Failed to accept donation" });
   }
 };

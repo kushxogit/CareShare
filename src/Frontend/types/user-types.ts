@@ -3,4 +3,6 @@ export type User = {
     email: string;
     name: string;
     role: string;
-  }
+    phone: string;
+    ignoredDonations: string[];
+}

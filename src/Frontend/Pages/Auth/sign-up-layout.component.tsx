@@ -57,7 +57,7 @@ const SignUpLayout: React.FC = () => {
         values.role
       )
       .then((response) => {
-        navigation.navigate("LogIn");
+        navigation.navigate("SignUpSuccess");
         showToastSuccess(response.data.message);
         formik.resetForm();
       })

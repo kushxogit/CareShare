@@ -1,4 +1,4 @@
-import { AxiosInstance } from "axios";
+import axios, { AxiosInstance } from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 import AppService from "./app.service";
 
@@ -9,21 +9,25 @@ export default class APIService extends AppService {
   constructor() {
     super();
     this.apiUrl = "http://localhost:3000/api/";
-    this.apiClient = APIService.getAxiosInstance({
+    this.apiClient = axios.create({
       baseURL: this.apiUrl,
     });
-    this.setAuthToken();
+    this.initializeInterceptors();
   }
 
-  async setAuthToken() {
-    const token = await AsyncStorage.getItem("token");
-    if (token) {
-      this.apiClient.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${token}`;
-    } else {
-      console.log("HERE");
-      delete this.apiClient.defaults.headers.common["Authorization"];
-    }
-  }
+  initializeInterceptors = () => {
+    this.apiClient.interceptors.request.use(
+      async (config) => {
+        const token = await AsyncStorage.getItem('token');
+        if (token) {
+          config.headers.Authorization = `Bearer ${token}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      }
+    );
+  };
 }
+

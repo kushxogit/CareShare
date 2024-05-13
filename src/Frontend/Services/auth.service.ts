@@ -22,14 +22,13 @@ export default class AuthService extends APIService {
       await AsyncStorage.setItem("role", response.data.user.role);
       return { data: response.data, error: undefined };
     } catch (error) {
-      return Promise.reject(error.message);
+      return {data: undefined, error: error.message}
     }
   };
 
   login = async (
     email: string,
-    password: string,
-    onLoginSuccess: (user: User) => void
+    password: string
   ): Promise<APIResponse<any>> => {
     try {
       const response = await this.apiClient.post("/auth/login", {
@@ -39,11 +38,32 @@ export default class AuthService extends APIService {
 
       await AsyncStorage.setItem("token", response.data.token);
       await AsyncStorage.setItem("role", response.data.user.role);
-
-      onLoginSuccess(response.data.user);
+      console.log(response.data.user, "user");
 
       return { data: response.data, error: undefined };
     } catch (error) {
+      return Promise.reject(error);
+    }
+  };
+
+  getUser = async (userId: string): Promise<APIResponse<any>> => {
+    try {
+      const response = await this.apiClient.get(`/auth/user/${userId}`);
+      return { data: response.data, error: undefined };
+    } catch (error) {
+      console.log("🚀 ~ AuthService ~ getUser= ~ error:", error);
+      return Promise.reject(error);
+    }
+  };
+
+  ignoreDonation = async (donationId: string): Promise<APIResponse<any>> => {
+    try {
+      const response = await this.apiClient.put(
+        `/auth/ignore-donation/${donationId}`
+      );
+      return { data: response.data, error: undefined };
+    } catch (error) {
+      console.log("🚀 ~ AuthService ~ ignoreDonation ~ error:", error);
       return Promise.reject(error);
     }
   };

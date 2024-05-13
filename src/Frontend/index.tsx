@@ -24,6 +24,9 @@ import RequestForm from "./Pages/Donation/request";
 import Engagement from "./Pages/Engagement/Engagement";
 import { DonationsProvider } from "./Contexts/acceptedDonationContext";
 import { Ionicons } from "react-native-vector-icons";
+import DonationDetail from "./Pages/Feed/donation_feed";
+import FaqPage from "./Pages/FAQ/faq";
+import SignUpSuccess from "./Pages/Auth/onboarding";
 
 interface AuthContextType {
   isUserLoggedIn: boolean;
@@ -47,26 +50,47 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
 const AuthStack = createStackNavigator();
 const AddStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
+const FeedStack = createStackNavigator();
+
+function FeedStackScreen() {
+  return (
+    <FeedStack.Navigator
+      screenOptions={({ navigation, route }) => ({
+        headerShown:
+          navigation.getState().routes.length > 1 ||
+          route.name === "DonationDetail",
+        headerTitle: "Donation Details",
+      })}
+    >
+      <FeedStack.Screen name="Feed Page" component={Feed} />
+      <FeedStack.Screen name="DonationDetail" component={DonationDetail} />
+    </FeedStack.Navigator>
+  );
+}
 
 function AuthNavigator() {
   return (
     <AuthStack.Navigator
       screenOptions={{
+        headerShown: true,
         headerStyle: {
           backgroundColor: "#FAAE2B",
         },
+        headerTitle: "",
+        headerBackTitle: "",
       }}
     >
       <AuthStack.Screen name="LandingPage" component={LandingPage} />
       <AuthStack.Screen name="LogIn" component={LogInPage} />
       <AuthStack.Screen name="SignUp" component={SignUpPage} />
+      <AuthStack.Screen name="SignUpSuccess" component={SignUpSuccess} />
     </AuthStack.Navigator>
   );
 }
 
 function AddStackScreen() {
   return (
-    <AddStack.Navigator>
+    <AddStack.Navigator screenOptions={{ headerShown: true, headerTitle: "" }}>
       <AddStack.Screen name="AddRequest" component={Add} />
       <AddStack.Screen name="Request" component={RequestForm} />
     </AddStack.Navigator>
@@ -86,44 +110,53 @@ function AppNavigator({ setIsUserLoggedIn }) {
   }, []);
 
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
+    <>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
 
-          if (route.name === "Feed") {
-            iconName = focused ? "list" : "list-outline";
-          } else if (route.name === "Add") {
-            iconName = focused ? "add-circle" : "add-circle-outline";
-          } else if (route.name === "Engagement") {
-            iconName = focused ? "heart" : "heart-outline"; 
-          } else if (route.name === "Profile") {
-            iconName = focused ? "person" : "person-outline"; 
-          }
+            if (route.name === "Feed") {
+              iconName = focused ? "list" : "list-outline";
+            } else if (route.name === "Add") {
+              iconName = focused ? "add-circle" : "add-circle-outline";
+            } else if (route.name === "Engagement") {
+              iconName = focused ? "heart" : "heart-outline";
+            } else if (route.name === "Profile") {
+              iconName = focused ? "person" : "person-outline";
+            } else if (route.name === "Faq") {
+              iconName = focused ? "help-circle" : "help-circle-outline"; // Add this line for FAQ icon
+            }
 
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        headerStyle: {
-          backgroundColor: "#FAAE2B",
-        },
-        headerRight: () => (
-          <TextButton
-            size="large"
-            onPress={async () => {
-              await AsyncStorage.removeItem("token");
-              setIsUserLoggedIn(false);
-            }}
-          >
-            <ButtonText>Logout</ButtonText>
-          </TextButton>
-        ),
-      })}
-    >
-      <Tab.Screen name="Feed" component={Feed} />
-      {role !== "Volunteer" && <Tab.Screen name="Add" component={AddStackScreen} />}
-      {role !== "Volunteer" && <Tab.Screen name="Engagement" component={Engagement} />}
-      <Tab.Screen name="Profile" component={Profile} />
-    </Tab.Navigator>
+            return <Ionicons name={iconName} size={size} color={color} />;
+          },
+          headerStyle: {
+            backgroundColor: "#FAAE2B",
+          },
+          headerRight: () => (
+            <TextButton
+              onPress={async () => {
+                await AsyncStorage.removeItem("token");
+                setIsUserLoggedIn(false);
+              }}
+            >
+              <ButtonText>Logout</ButtonText>
+            </TextButton>
+          ),
+          headerTitle: "CareShare",
+        })}
+      >
+        <Tab.Screen name="Feed" component={FeedStackScreen} />
+        {role !== "Volunteer" && (
+          <Tab.Screen name="Engagement" component={Engagement} />
+        )}
+        {role !== "Volunteer" && (
+          <Tab.Screen name="Add" component={AddStackScreen} />
+        )}
+        <Tab.Screen name="Faq" component={FaqPage} />
+        <Tab.Screen name="Profile" component={Profile} />
+      </Tab.Navigator>
+    </>
   );
 }
 
@@ -147,14 +180,16 @@ export default function Initial() {
   }
 
   return (
-    <NavigationContainer>
-      <DonationsProvider>
-        {isUserLoggedIn ? (
-          <AppNavigator setIsUserLoggedIn={setIsUserLoggedIn} />
-        ) : (
-          <AuthNavigator />
-        )}
-      </DonationsProvider>
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <DonationsProvider>
+          {isUserLoggedIn ? (
+            <AppNavigator setIsUserLoggedIn={setIsUserLoggedIn} />
+          ) : (
+            <AuthNavigator />
+          )}
+        </DonationsProvider>
+      </NavigationContainer>
+    </AuthProvider>
   );
 }

@@ -26,8 +26,7 @@ const LogInLayout: React.FC = () => {
   const authServiceInstance = new AuthService();
   const navigation = useNavigation<NavigationType>();
 
-
-  const { setIsUserLoggedIn, setUser} = useAuth();
+  const { setIsUserLoggedIn, setUser } = useAuth();
 
   const formik = useFormik({
     initialValues: {
@@ -37,13 +36,17 @@ const LogInLayout: React.FC = () => {
     validationSchema: LoginSchema,
     onSubmit: (values, { setSubmitting }) => {
       authServiceInstance
-        .login(values.email, values.password, setUser)
+        .login(values.email, values.password)
         .then((response) => {
-          showToastSuccess(response.data.message);
-          setIsUserLoggedIn(true);
+          // This block is executed only if the login is successful
+          console.log("🚀 ~ .then ~ response:", response);
+          setUser(response.data.user); // Set user data in context/state
+          showToastSuccess(response.data.message); // Show success message
+          setIsUserLoggedIn(true); // Update login state to true
         })
         .catch((response) => {
-          showToastError(response.error.message);
+          console.log("🚀 ~ response:", response)
+          showToastError('You have entered incorrect credentials, Please try again!'); 
         })
         .finally(() => {
           setSubmitting(false);
@@ -91,7 +94,10 @@ const LogInLayout: React.FC = () => {
         }}
       >
         <Text>OR</Text>
-        <PrimaryButton fullWidth={true} onPress={() => navigation.navigate("SignUp")}>
+        <PrimaryButton
+          fullWidth={true}
+          onPress={() => navigation.navigate("SignUp")}
+        >
           <ButtonText>Sign Up</ButtonText>
         </PrimaryButton>
       </Layout>

@@ -16,7 +16,7 @@ type Donation = {
   id: string;
   title: string;
   description: string;
-  for: string; // Added for charity
+  for: string;
   pickupTimes: string;
   userId: string;
 };
@@ -41,6 +41,7 @@ const Engagement: React.FC<EngagementProps> = ({
       const response = await useDonationService.getAllDonationsForUser(
         user.userId
       );
+      console.log("🚀 ~ fetchDonations ~ response:", response.data);
       if (response && response.data && response.data.donations) {
         setDonations(response.data.donations);
       }

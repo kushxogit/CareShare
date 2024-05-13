@@ -1,31 +1,42 @@
 import React, { PropsWithChildren, useEffect, useState } from "react";
 import { Layout, Spinner, Button } from "@ui-kitten/components";
 import { ListAccessoriesShowcase } from "src/Frontend/Components/List/list";
-import { IDonationData } from "src/Frontend/types/donation-types";
+import {
+  IDonationData,
+  IDonationDataWithUser,
+} from "src/Frontend/types/donation-types";
 import DonationService from "src/Frontend/Services/donation.service";
+import { AuthProvider, useAuth } from "src/Frontend/Contexts/authContext";
+import { User } from "src/Frontend/types/user-types";
 
 const Feed: React.FC<PropsWithChildren> = ({ children }) => {
   const donationServiceInstance = new DonationService();
-
-  const [donations, setDonations] = useState<IDonationData[]>([]);
+  const { fetchUser } = useAuth();
+  const [donationsUser, setDonationsUser] = useState<IDonationDataWithUser[]>(
+    []
+  );
   const [updateTrigger, setUpdateTrigger] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
-  const updateDonations = (newDonations: IDonationData[]) => {
-    setIsLoading(true);
-    setDonations(newDonations);
-    setIsLoading(false);
-  };
 
   useEffect(() => {
     setIsLoading(true);
     donationServiceInstance
       .getAllDonations()
-      .then((response) => {
-        setTimeout(() => {
-          const allDonations = [...response.data.donations];
-          updateDonations(allDonations);
-        }, 1000);
+      .then(async (response) => {
+        const allDonations = [...response.data.donations];
+        const donationsWithUser = await Promise.all(
+          allDonations.map(async (donation) => {
+            try {
+              const userResponse = await fetchUser(donation.userId);
+              return { ...donation, user: userResponse };
+            } catch (error) {
+              console.error("Failed to fetch user:", error);
+              return { ...donation, user: null };
+            }
+          })
+        );
+        setDonationsUser(donationsWithUser);
+        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Failed to fetch donations:", error);
@@ -48,11 +59,18 @@ const Feed: React.FC<PropsWithChildren> = ({ children }) => {
       }}
     >
       {isLoading ? (
-        <Layout style={{ flex: 1, justifyContent: "center", alignItems: "center", height:'100%'}}>
+        <Layout
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
           <Spinner />
         </Layout>
       ) : (
-        <ListAccessoriesShowcase items={donations} />
+        <ListAccessoriesShowcase items={donationsUser} />
       )}
       {children}
       <Button onPress={triggerUpdate} style={{ margin: 10 }}>

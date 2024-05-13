@@ -13,16 +13,18 @@ const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
-  if (token == null) {
+  if (!token) {
+    console.log("No token found");
     return res.sendStatus(401);
   }
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user: any) => {
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded: any) => {
     if (err) {
+      console.log("Token verification failed:", err);
       return res.sendStatus(403);
     }
-
-    req.user = user;
+    console.log("Decoded user from token:", decoded);
+    req.user = decoded;
     next();
   });
 };
