@@ -11,3 +11,5 @@ Download ExpoGo from Play Store or iOS App Store and scan the provided QR code b
 npm run start
 
 testing 2 2 2 2 2
+testing 1
+
