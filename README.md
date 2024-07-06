@@ -9,3 +9,5 @@ Now create two terminals and run these commands in each
 If you want to use this on your mobile device instead of emulator,
 Download ExpoGo from Play Store or iOS App Store and scan the provided QR code by Metro when you run 
 npm run start
+
+testing 2 2 2 2 2
